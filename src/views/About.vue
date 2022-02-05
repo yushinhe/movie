@@ -1,11 +1,6 @@
 <template>
   <div class="container">
 
-    <input
-      type="text"
-      v-model="search"
-      @keyup.enter="searchMovie"
-    />
     <el-row
       type="flex"
       :gutter="20"
@@ -16,7 +11,7 @@
         :md="4"
       >
         <el-card
-          class="box-card"
+          class="box-card mb-2"
           :body-style="{ padding: '0px' }"
         >
           <div
@@ -45,14 +40,14 @@
           </div>
         </el-card>
         <el-card
-          class="box-card"
+          class="box-card  mb-2"
           :body-style="{ padding: '0px' }"
         >
           <div
             slot="header"
             class="clearfix sort-item"
           >
-            <span class="sort-title">篩選</span>
+            <span class="sort-title">類型篩選</span>
             <i
               :class="canFilter?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
               @click="canFilter = !canFilter"
@@ -64,7 +59,7 @@
           >
             <ul class="flex flex-wrap">
               <li
-                v-for="item in movieDDB"
+                v-for="item in newMovieDDB"
                 :key='item.id'
                 class="ml-1 mr-1 mb-3"
               > <span
@@ -74,69 +69,111 @@
             </ul>
           </div>
         </el-card>
+        <el-card
+          class="box-card  mb-2"
+          :body-style="{ padding: '0px' }"
+        >
+          <div
+            slot="header"
+            class="clearfix sort-item"
+          >
+            <span class="sort-title">搜尋</span>
+            <i
+              :class="canSearch?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
+              @click="canSearch = !canSearch"
+            ></i>
+          </div>
+          <div
+            v-if="canSearch"
+            class="sort-body"
+          >
+            <el-select
+              v-model="search"
+              filterable
+              multiple
+              remote
+              :remote-method="getKeyWordList"
+              placeholder="依關鍵字篩選"
+            >
+              <el-option
+                v-for="item in keyWordList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </el-card>
       </el-col>
       <el-col
         :xs="16"
         :sm="18"
         :md="20"
       >
-        <ul class="card-group">
-          <li
-            v-for="item in movieList"
-            :key="item.id"
-          >
-            <el-card class="box-card">
-              <div
-                slot="header"
-                class="clearfix"
-                style="position:relative"
-              >
-                <template v-if="item.backdrop_path">
-                  <img
-                    :src="`https://image.tmdb.org/t/p/w1280/${item.backdrop_path}`"
-                    alt=""
-                  />
-                </template>
-                <template v-else>
-                  <div class="no-img-item">
-                    <p>目前無海報</p>
+        <template v-if="Array.isArray(movieList)">
+          <ul class="card-group">
+            <li
+              v-for="item in movieList"
+              :key="item.id"
+            >
+              <el-card class="box-card">
+                <div
+                  slot="header"
+                  class="clearfix"
+                  style="position:relative"
+                >
+                  <template v-if="item.backdrop_path">
+                    <img
+                      :src="`https://image.tmdb.org/t/p/w1280/${item.backdrop_path}`"
+                      alt=""
+                    />
+                  </template>
+                  <template v-else>
+                    <div class="no-img-item">
+                      <p>目前無海報</p>
+                    </div>
+                  </template>
+                  <div class="circle-progress">
+                    <el-progress
+                      :width='50'
+                      type="circle"
+                      :percentage="item.vote_average * 10"
+                      :format="format"
+                    ></el-progress>
                   </div>
-                </template>
-                <div class="circle-progress">
-                  <el-progress
-                    :width='50'
-                    type="circle"
-                    :percentage="item.vote_average * 10"
-                    :format="format"
-                  ></el-progress>
                 </div>
-              </div>
 
-              <div class="info">
-                <h3>{{item.title}}</h3>
-                <p>上映日期:{{item.release_date}}</p>
-              </div>
-            </el-card>
-          </li>
-        </ul>
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="totalPage"
-          @current-change="current_change"
-        >
-        </el-pagination>
+                <div class="info">
+                  <h3>{{item.title}}</h3>
+                  <p>上映日期:{{item.release_date}}</p>
+                </div>
+              </el-card>
+            </li>
+          </ul>
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            :page-count="totalPage"
+            :current-page.sync="page"
+            @current-change="current_change"
+          >
+          </el-pagination>
+        </template>
+        <template v-else>
+          <h3>找不到你的查詢結果。</h3>
+        </template>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
-import { getMovieList, getSearchMovie } from '../api/index';
+import { getMovieList, getKeywordList } from '../api/index';
 export default {
   name: 'about',
   data: function () {
     return {
-      search: '',
+      search: [],
       movieList: null,
       page: 1,
       totalPage: 500,
@@ -154,31 +191,37 @@ export default {
         { id: 7, label: '按片名(A-Z)' },
         { id: 8, label: '按片名(Z-A)' },
       ],
+      newMovieDDB: null,
+      canSearch: false,
+      keyWordList: [],
     };
   },
   computed: {
     movieDDB: {
       get() {
-        let obj = this.$store.state.movie.movieDDB;
-        obj.map((item) => {
-          item.active = false;
-        });
-        return obj;
+        return this.$store.state.movie.movieDDB;
       },
       set() {
         this.$store.commit('movie/setMovieDDB');
       },
     },
   },
-  created() {
-    this.$store.dispatch('movie/setMovieDDB');
+  async created() {
+    await this.$store.dispatch('movie/setMovieDDB');
+    await this.setNewMovieDDB();
   },
   methods: {
     current_change(currentPage) {
       this.page = currentPage;
     },
-    async getMealData(page, type) {
-      const queryData = { page: page };
+    async getMealData(page, type, filterArr, keyWordList) {
+      const newFilterArr = filterArr.length > 0 ? filterArr.join(',') : '';
+      const newKeywordArr = keyWordList.length > 0 ? keyWordList.join(',') : '';
+      const queryData = {
+        page: page,
+        filterArr: newFilterArr,
+        keyWordList: newKeywordArr,
+      };
       switch (type) {
         case 1:
           queryData.order = 'desc';
@@ -218,17 +261,20 @@ export default {
       await getMovieList(queryData)
         .then((res) => {
           console.log(res);
-          this.movieList = res.data.results;
+          this.movieList = res.data.results.length>0? res.data.results:null;
+          this.totalPage =
+            res.data.total_pages > 500 ? 500 : res.data.total_pages;
         })
         .catch((error) => {
           console.log(error);
         });
     },
-    async searchMovie() {
-      await getSearchMovie(this.search)
+    async getKeyWordList(query) {
+      if (query === '') return;
+      await getKeywordList(query)
         .then((res) => {
           console.log(res);
-          this.movieList = res.data.results;
+          this.keyWordList = res.data.results;
         })
         .catch((error) => {
           console.log(error);
@@ -246,20 +292,38 @@ export default {
         console.log(data.active);
       }
     },
-    format(percentage){
-      return `${percentage}%`
-    }
+    format(percentage) {
+      return `${percentage}%`;
+    },
+    setNewMovieDDB() {
+      this.newMovieDDB = this.movieDDB.map((item) => {
+        return { active: false, name: item.name, id: item.id };
+      });
+    },
   },
   watch: {
     page: {
       immediate: true,
       handler(val) {
-        this.getMealData(val, this.sortType);
+        this.getMealData(val, this.sortType, this.filterArr, this.search);
       },
     },
     sortType: {
       handler(val) {
-        this.getMealData(this.page, val);
+        this.page = 1;
+        this.getMealData(1, val, this.filterArr, this.search);
+      },
+    },
+    filterArr: {
+      handler(val) {
+        this.page = 1;
+        this.getMealData(1, this.sortType, val, this.search);
+      },
+    },
+    search: {
+      handler(val) {
+        this.page = 1;
+        this.getMealData(1, this.sortType, this.filterArr, val);
       },
     },
   },
@@ -318,6 +382,9 @@ export default {
   }
 }
 .sort-body {
+  .sort-type-title {
+    text-align: left;
+  }
   padding: 20px;
   .filter-btn {
     border: 1px solid #9e9e9e;
