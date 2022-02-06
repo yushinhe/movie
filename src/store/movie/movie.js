@@ -4,6 +4,7 @@ import { getMovieDDB } from '../../api';
 const state = {
   movieDDB: null,
   actors: null,
+  recommendationsMovie: null,
 };
 const getters = {};
 const mutations = {
@@ -12,6 +13,9 @@ const mutations = {
   },
   setActors(state, data) {
     state.actors = data;
+  },
+  setRecommendationsMovie(state, data) {
+    state.recommendationsMovie = data;
   },
 };
 const actions = {
@@ -22,6 +26,9 @@ const actions = {
   },
   setActors(context, data) {
     context.commit('setActors', data);
+  },
+  setRecommendationsMovie(context, data) {
+    context.commit('setRecommendationsMovie', data);
   },
 };
 

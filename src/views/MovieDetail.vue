@@ -70,7 +70,9 @@
     <div class="container">
       <h3 class="text-left mt-5 mb-2 ml-3">主要演員</h3>
       <div class="actor-carousal-list ">
-        <ActorCarousel></ActorCarousel>
+        <div style="overflow-x:hidden">
+          <ActorCarousel></ActorCarousel>
+        </div>
         <div class="info-card text-left">
           <div
             class="info mb-3"
@@ -82,13 +84,19 @@
           </div>
         </div>
       </div>
+      <h3 class="text-left mt-5 mb-2 ml-3">相關推薦電影</h3>
+      <div style="overflow-x:hidden">
+
+        <recommendations-movies></recommendations-movies>
+      </div>
     </div>
 
   </div>
 </template>
 <script>
-import { getMovieDetail, getMovieActors } from '../api/index';
+import { getMovieDetail, getMovieActors, getRecommendationsMovie } from '../api/index';
 import ActorCarousel from '../components/ActorCarousel.vue';
+import RecommendationsMovies from '../components/RecommendationsMovies.vue';
 
 export default {
   name: 'movieDetail',
@@ -98,7 +106,7 @@ export default {
       originState: [{ label: '原始標題', value: 'original_title' }, { label: '狀態', value: 'status' }, { label: '原始語言', value: 'original_language' }, { label: '電影成本', value: 'budget' }, { label: '收入', value: 'revenue' }],
     };
   },
-  components: { ActorCarousel },
+  components: { ActorCarousel, RecommendationsMovies },
   computed: {
     movieId: {
       get() {
@@ -113,15 +121,23 @@ export default {
         this.$store.dispatch('movie/setActors', val);
       },
     },
+    recommendationsMovie: {
+      get() {
+        return this.$store.state.movie.recommendationsMovie;
+      },
+      set(val) {
+        this.$store.dispatch('movie/setRecommendationsMovie', val);
+      },
+    },
   },
   created() {
-    this.getMovieDetail();
-    this.getMovieActor();
+
   },
   methods: {
-    async getMovieDetail() {
-      await getMovieDetail(this.movieId)
+    async getMovieDetail(val) {
+      await getMovieDetail(val)
         .then((res) => {
+          console.log(val);
           console.log(res.data);
           this.movieData = res.data;
         })
@@ -129,10 +145,19 @@ export default {
           console.log(error);
         });
     },
-    async getMovieActor() {
-      await getMovieActors(this.movieId)
+    async getMovieActor(val) {
+      await getMovieActors(val)
         .then((res) => {
           this.actors = res.data.cast;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getRecommendationsMovie(val) {
+      await getRecommendationsMovie(val)
+        .then((res) => {
+          this.recommendationsMovie = res.data.results;
         })
         .catch((error) => {
           console.log(error);
@@ -147,11 +172,25 @@ export default {
     format(percentage) {
       return `${percentage}%`;
     },
-    test() {
-      console.log(this.movieData);
+    scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    },
+
+  },
+  watch: {
+    movieId: {
+      immediate: true,
+      handler(newVal, oldVal) {
+        this.getMovieDetail(newVal);
+        this.getMovieActor(newVal);
+        this.getRecommendationsMovie(newVal);
+        this.scrollToTop();
+      },
     },
   },
-  watch: {},
 };
 </script>
 <style lang="scss" scoped >
