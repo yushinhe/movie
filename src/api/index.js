@@ -14,3 +14,6 @@ export const getKeywordList = (str) => requests(
 export const getMovieDetail = (id) => requests(
   `/movie/${id}?language=zh-TW&api_key=${apiKey}`,
 );
+export const getMovieActors = (id) => requests(
+  `/movie/${id}/credits?language=zh-TW&api_key=${apiKey}`,
+);

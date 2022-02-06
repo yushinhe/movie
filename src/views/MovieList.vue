@@ -208,6 +208,7 @@ export default {
       keyWordList: [],
     };
   },
+
   computed: {
     movieDDB: {
       get() {
