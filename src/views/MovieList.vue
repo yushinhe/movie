@@ -130,9 +130,15 @@
                     />
                   </template>
                   <template v-else>
-                    <div class="no-img-item">
-                      <p>目前無海報</p>
-                    </div>
+                    <el-image class=" no-img">
+                      <div
+                        slot="error"
+                        class="image-slot"
+                        style="margin-top:28%"
+                      >
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
                   </template>
                   <div class="circle-progress">
                     <el-progress
@@ -145,7 +151,12 @@
                 </div>
 
                 <div class="info">
-                  <h3>{{item.title}}</h3>
+                  <router-link
+                    class="link cursor-pointer"
+                    :to="{ name: 'movieDetail', params: { id: item.id }}"
+                  >
+                    <h3>{{item.title}}</h3>
+                  </router-link>
                   <p>上映日期:{{item.release_date}}</p>
                 </div>
               </el-card>
@@ -169,9 +180,10 @@
 </template>
 <script>
 import { getMovieList, getKeywordList } from '../api/index';
+
 export default {
-  name: 'about',
-  data: function () {
+  name: 'MovieList',
+  data() {
     return {
       search: [],
       movieList: null,
@@ -218,7 +230,7 @@ export default {
       const newFilterArr = filterArr.length > 0 ? filterArr.join(',') : '';
       const newKeywordArr = keyWordList.length > 0 ? keyWordList.join(',') : '';
       const queryData = {
-        page: page,
+        page,
         filterArr: newFilterArr,
         keyWordList: newKeywordArr,
       };
@@ -261,16 +273,16 @@ export default {
       await getMovieList(queryData)
         .then((res) => {
           console.log(res);
-          this.movieList = res.data.results.length>0? res.data.results:null;
-          this.totalPage =
-            res.data.total_pages > 500 ? 500 : res.data.total_pages;
+          this.movieList = res.data.results.length > 0 ? res.data.results : null;
+          this.totalPage = res.data.total_pages > 500 ? 500 : res.data.total_pages;
         })
         .catch((error) => {
           console.log(error);
         });
     },
     async getKeyWordList(query) {
-      if (query === '') return;
+      if (query.length === 0) return;
+      console.log('hi');
       await getKeywordList(query)
         .then((res) => {
           console.log(res);
@@ -281,24 +293,22 @@ export default {
         });
     },
     toggleFilter(data) {
-      console.log(data.active);
-      if (data.active) {
-        data.active = false;
-        this.filterArr = this.filterArr.filter((item) => item !== data.id);
+      const innerData = data;
+      if (innerData.active) {
+        innerData.active = false;
+        this.filterArr = this.filterArr.filter((item) => item !== innerData.id);
         console.log(data.active);
       } else {
-        data.active = true;
-        this.filterArr.push(data.id);
-        console.log(data.active);
+        innerData.active = true;
+        this.filterArr.push(innerData.id);
+        console.log(innerData.active);
       }
     },
     format(percentage) {
       return `${percentage}%`;
     },
     setNewMovieDDB() {
-      this.newMovieDDB = this.movieDDB.map((item) => {
-        return { active: false, name: item.name, id: item.id };
-      });
+      this.newMovieDDB = this.movieDDB.map((item) => ({ active: false, name: item.name, id: item.id }));
     },
   },
   watch: {
@@ -334,31 +344,27 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 20px;
-  @media screen and (max-width: 960px) {
+
+  @media screen and (max-width: 992px) {
     grid-template-columns: 1fr 1fr 1fr;
   }
-  @media screen and (max-width: 720px) {
+
+  @media screen and (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
   }
-  @media screen and (max-width: 480px) {
+
+  @media screen and (max-width: 576px) {
     grid-template-columns: 1fr;
   }
   img {
     width: 100%;
   }
 }
-.no-img-item {
+.no-img {
   width: 100%;
   height: 0;
   padding-bottom: 56%;
-  position: relative;
   background: lightgray;
-  p {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%);
-  }
 }
 .el-card ::v-deep .el-card__header {
   padding: 0;

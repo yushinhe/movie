@@ -1,5 +1,6 @@
 /* eslint-disable no-shadow */
-import { getMovieDDB } from "../../api";
+import { getMovieDDB } from '../../api';
+
 const state = {
   movieDDB: null,
 };
@@ -12,7 +13,7 @@ const mutations = {
 const actions = {
   async setMovieDDB(context) {
     await getMovieDDB({}).then((res) => {
-      context.commit("setMovieDDB", res.data.genres);
+      context.commit('setMovieDDB', res.data.genres);
     });
   },
 };

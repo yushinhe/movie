@@ -104,7 +104,7 @@
 
 <script>
 export default {
-  name: "HelloWorld",
+  name: 'HelloWorld',
   data() {
     return {};
   },
@@ -112,17 +112,10 @@ export default {
     msg: String,
   },
   computed: {
-    mealList: {
-      get() {
-        return this.$store.state.meal.mealList;
-      },
-      set(val) {
-        this.$store.commit("meal/setMealList", val);
-      },
-    },
+
   },
   created() {
-    this.$store.dispatch("meal/setMealList");
+
   },
   methods: {},
 };
