@@ -5,13 +5,13 @@ import Home from '../views/Home.vue';
 Vue.use(VueRouter);
 
 const routes = [
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  // },
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-  },
-  {
-    path: '/movieList',
     name: 'movieList',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -25,6 +25,14 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/MovieDetail.vue'),
+  },
+  {
+    path: '/ratingList',
+    name: 'RatingList',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/RatingList.vue'),
   },
 ];
 

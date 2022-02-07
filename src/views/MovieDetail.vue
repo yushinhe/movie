@@ -35,6 +35,7 @@
               :key="item.id"
             ><span class="mr-2">{{item.name}}</span> </li>
           </ul>
+          <to-rating @rate='rate'></to-rating>
           <div class="circle-progress flex mb-2">
             <el-progress
               :width='50'
@@ -94,9 +95,12 @@
   </div>
 </template>
 <script>
-import { getMovieDetail, getMovieActors, getRecommendationsMovie } from '../api/index';
+import {
+  getMovieDetail, getMovieActors, getRecommendationsMovie, ratingMovie,
+} from '../api/index';
 import ActorCarousel from '../components/ActorCarousel.vue';
 import RecommendationsMovies from '../components/RecommendationsMovies.vue';
+import ToRating from '../components/ToRating.vue';
 
 export default {
   name: 'movieDetail',
@@ -106,7 +110,7 @@ export default {
       originState: [{ label: '原始標題', value: 'original_title' }, { label: '狀態', value: 'status' }, { label: '原始語言', value: 'original_language' }, { label: '電影成本', value: 'budget' }, { label: '收入', value: 'revenue' }],
     };
   },
-  components: { ActorCarousel, RecommendationsMovies },
+  components: { ActorCarousel, RecommendationsMovies, ToRating },
   computed: {
     movieId: {
       get() {
@@ -127,6 +131,14 @@ export default {
       },
       set(val) {
         this.$store.dispatch('movie/setRecommendationsMovie', val);
+      },
+    },
+    favoriteMovie: {
+      get() {
+        return this.$store.state.movie.favoriteMovie;
+      },
+      set(val) {
+        this.$store.commit('movie/setFavoriteMovie', val);
       },
     },
   },
@@ -178,7 +190,26 @@ export default {
         behavior: 'smooth',
       });
     },
-
+    rate(value) {
+      const queryData = {
+        rating: value,
+        title: this.movieData.title,
+        id: this.movieData.id,
+        img: `https://image.tmdb.org/t/p/w1280/${this.movieData.poster_path}`,
+        overview: this.movieData.overview,
+        vote_average: this.movieData.vote_average,
+        release_date: this.movieData.release_date,
+      };
+      if (this.favoriteMovie.length > 0) {
+        this.favoriteMovie = this.favoriteMovie.filter((item) => item.id !== queryData.id);
+      }
+      this.favoriteMovie.push(queryData);
+      this.$message({
+        message: '評分成功',
+        type: 'success',
+      });
+      this.$router.push({ name: 'RatingList' });
+    },
   },
   watch: {
     movieId: {
@@ -197,9 +228,7 @@ export default {
 .bg {
   padding: 30px;
   position: relative;
-  z-index: -2;
   .banner {
-    z-index: -1;
     position: absolute;
     top: 0;
     left: 0;
@@ -208,6 +237,7 @@ export default {
     background: rgba($color: #000000, $alpha: 0.6);
   }
   .intro {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr 3fr;
     gap: 30px;

@@ -12,7 +12,7 @@
         ></el-image>
         <div class="flex space-between">
           <router-link
-            class="link cursor-pointer"
+            class="link black-word cursor-pointer"
             :to="{ name: 'movieDetail', params: { id: item.id }}"
           >
             <h4>{{item.title}}</h4>

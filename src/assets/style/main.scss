@@ -1,11 +1,14 @@
 @import 'spaceing.scss';
-
+$darkblue:rgb(3,37,65);
+$green:#01d277;
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
+body{
+    background-color: #f0f8ff;
+}
 .cursor-pointer {
     cursor: pointer;
 }
@@ -20,6 +23,7 @@
 .space-between{
     justify-content: space-between;
 }
+
 .text-left{
     text-align: left;
 }
@@ -40,13 +44,23 @@
 
     @media screen and (max-width:576px) {
         max-width:540px;
-
     }
 }
 .link {
-    color: black;
     text-decoration: none;
 }
 .italic{
     font-style: italic;
+}
+.dark-blue-bg{
+    background-color: $darkblue;
+}
+.white-word{
+    color:white
+}
+.black-word{
+    color:black
+}
+.green-bg{
+    background: $green;
 }

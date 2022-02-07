@@ -1,181 +1,183 @@
 <template>
-  <div class="container">
-
-    <el-row
-      type="flex"
-      :gutter="20"
-    >
-      <el-col
-        :xs="8"
-        :sm="6"
-        :md="4"
+  <div class="mt-5">
+    <div class="container">
+      <el-row
+        type="flex"
+        :gutter="20"
       >
-        <el-card
-          class="box-card mb-2"
-          :body-style="{ padding: '0px' }"
+        <el-col
+          :xs="8"
+          :sm="6"
+          :md="4"
         >
-          <div
-            slot="header"
-            class="clearfix sort-item"
+          <el-card
+            class="box-card mb-2"
+            :body-style="{ padding: '0px' }"
           >
-            <span class="sort-title">排序</span>
-            <i
-              :class="canSort?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
-              @click="canSort = !canSort"
-            ></i>
-          </div>
-          <div
-            v-if="canSort"
-            class="sort-body"
-          >
-            <el-select v-model="sortType">
-              <el-option
-                v-for="item in sortObject"
-                :key="item.id"
-                :label="item.label"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </el-card>
-        <el-card
-          class="box-card  mb-2"
-          :body-style="{ padding: '0px' }"
-        >
-          <div
-            slot="header"
-            class="clearfix sort-item"
-          >
-            <span class="sort-title">類型篩選</span>
-            <i
-              :class="canFilter?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
-              @click="canFilter = !canFilter"
-            ></i>
-          </div>
-          <div
-            v-if="canFilter"
-            class="sort-body"
-          >
-            <ul class="flex flex-wrap">
-              <li
-                v-for="item in newMovieDDB"
-                :key='item.id'
-                class="ml-1 mr-1 mb-3"
-              > <span
-                  :class="item.active?'active filter-btn':'filter-btn'"
-                  @click="toggleFilter(item)"
-                >{{item.name}}</span></li>
-            </ul>
-          </div>
-        </el-card>
-        <el-card
-          class="box-card  mb-2"
-          :body-style="{ padding: '0px' }"
-        >
-          <div
-            slot="header"
-            class="clearfix sort-item"
-          >
-            <span class="sort-title">搜尋</span>
-            <i
-              :class="canSearch?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
-              @click="canSearch = !canSearch"
-            ></i>
-          </div>
-          <div
-            v-if="canSearch"
-            class="sort-body"
-          >
-            <el-select
-              v-model="search"
-              filterable
-              multiple
-              remote
-              :remote-method="getKeyWordList"
-              placeholder="依關鍵字篩選"
+            <div
+              slot="header"
+              class="clearfix sort-item"
             >
-              <el-option
-                v-for="item in keyWordList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col
-        :xs="16"
-        :sm="18"
-        :md="20"
-      >
-        <template v-if="Array.isArray(movieList)">
-          <ul class="card-group">
-            <li
-              v-for="item in movieList"
-              :key="item.id"
+              <span class="sort-title">排序</span>
+              <i
+                :class="canSort?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
+                @click="canSort = !canSort"
+              ></i>
+            </div>
+            <div
+              v-if="canSort"
+              class="sort-body"
             >
-              <el-card class="box-card">
-                <div
-                  slot="header"
-                  class="clearfix"
-                  style="position:relative"
+              <el-select v-model="sortType">
+                <el-option
+                  v-for="item in sortObject"
+                  :key="item.id"
+                  :label="item.label"
+                  :value="item.id"
                 >
-                  <template v-if="item.backdrop_path">
-                    <img
-                      :src="`https://image.tmdb.org/t/p/w1280/${item.backdrop_path}`"
-                      alt=""
-                    />
-                  </template>
-                  <template v-else>
-                    <el-image class=" no-img">
-                      <div
-                        slot="error"
-                        class="image-slot"
-                        style="margin-top:28%"
-                      >
-                        <i class="el-icon-picture-outline"></i>
-                      </div>
-                    </el-image>
-                  </template>
-                  <div class="circle-progress">
-                    <el-progress
-                      :width='50'
-                      type="circle"
-                      :percentage="item.vote_average * 10"
-                      :format="format"
-                    ></el-progress>
-                  </div>
-                </div>
-
-                <div class="info">
-                  <router-link
-                    class="link cursor-pointer"
-                    :to="{ name: 'movieDetail', params: { id: item.id }}"
-                  >
-                    <h3>{{item.title}}</h3>
-                  </router-link>
-                  <p>上映日期:{{item.release_date}}</p>
-                </div>
-              </el-card>
-            </li>
-          </ul>
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            :page-count="totalPage"
-            :current-page.sync="page"
-            @current-change="current_change"
+                </el-option>
+              </el-select>
+            </div>
+          </el-card>
+          <el-card
+            class="box-card  mb-2"
+            :body-style="{ padding: '0px' }"
           >
-          </el-pagination>
-        </template>
-        <template v-else>
-          <h3>找不到你的查詢結果。</h3>
-        </template>
-      </el-col>
-    </el-row>
+            <div
+              slot="header"
+              class="clearfix sort-item"
+            >
+              <span class="sort-title">類型篩選</span>
+              <i
+                :class="canFilter?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
+                @click="canFilter = !canFilter"
+              ></i>
+            </div>
+            <div
+              v-if="canFilter"
+              class="sort-body"
+            >
+              <ul class="flex flex-wrap">
+                <li
+                  v-for="item in newMovieDDB"
+                  :key='item.id'
+                  class="ml-1 mr-1 mb-3"
+                > <span
+                    :class="item.active?'active filter-btn':'filter-btn'"
+                    @click="toggleFilter(item)"
+                  >{{item.name}}</span></li>
+              </ul>
+            </div>
+          </el-card>
+          <el-card
+            class="box-card  mb-2"
+            :body-style="{ padding: '0px' }"
+          >
+            <div
+              slot="header"
+              class="clearfix sort-item"
+            >
+              <span class="sort-title">搜尋</span>
+              <i
+                :class="canSearch?'el-icon-arrow-down cursor-pointer':'el-icon-arrow-right cursor-pointer'"
+                @click="canSearch = !canSearch"
+              ></i>
+            </div>
+            <div
+              v-if="canSearch"
+              class="sort-body"
+            >
+              <el-select
+                v-model="search"
+                filterable
+                multiple
+                remote
+                :remote-method="getKeyWordList"
+                placeholder="依關鍵字篩選"
+              >
+                <el-option
+                  v-for="item in keyWordList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col
+          :xs="16"
+          :sm="18"
+          :md="20"
+        >
+          <template v-if="Array.isArray(movieList)">
+            <ul class="card-group">
+              <li
+                v-for="item in movieList"
+                :key="item.id"
+              >
+                <el-card class="box-card">
+                  <div
+                    slot="header"
+                    class="clearfix"
+                    style="position:relative"
+                  >
+                    <template v-if="item.backdrop_path">
+                      <img
+                        :src="`https://image.tmdb.org/t/p/w1280/${item.backdrop_path}`"
+                        alt=""
+                      />
+                    </template>
+                    <template v-else>
+                      <el-image class=" no-img">
+                        <div
+                          slot="error"
+                          class="image-slot"
+                          style="margin-top:28%"
+                        >
+                          <i class="el-icon-picture-outline"></i>
+                        </div>
+                      </el-image>
+                    </template>
+                    <div class="circle-progress">
+                      <el-progress
+                        :width='50'
+                        type="circle"
+                        :percentage="item.vote_average * 10"
+                        :format="format"
+                      ></el-progress>
+                    </div>
+                  </div>
+
+                  <div class="info">
+                    <router-link
+                      class="link black-word cursor-pointer"
+                      :to="{ name: 'movieDetail', params: { id: item.id }}"
+                    >
+                      <h3>{{item.title}}</h3>
+                    </router-link>
+                    <p>上映日期:{{item.release_date}}</p>
+                  </div>
+                </el-card>
+              </li>
+            </ul>
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :page-count="totalPage"
+              :current-page.sync="page"
+              @current-change="current_change"
+              class="mt-3 mb-3"
+            >
+            </el-pagination>
+          </template>
+          <template v-else>
+            <h3>找不到你的查詢結果。</h3>
+          </template>
+        </el-col>
+      </el-row>
+    </div>
   </div>
 </template>
 <script>

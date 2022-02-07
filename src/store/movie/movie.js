@@ -5,6 +5,7 @@ const state = {
   movieDDB: null,
   actors: null,
   recommendationsMovie: null,
+  favoriteMovie: [],
 };
 const getters = {};
 const mutations = {
@@ -16,6 +17,9 @@ const mutations = {
   },
   setRecommendationsMovie(state, data) {
     state.recommendationsMovie = data;
+  },
+  setFavoriteMovie(state, data) {
+    state.favoriteMovie = data;
   },
 };
 const actions = {
@@ -29,6 +33,9 @@ const actions = {
   },
   setRecommendationsMovie(context, data) {
     context.commit('setRecommendationsMovie', data);
+  },
+  setFavoriteMovie(context, data) {
+    context.commit('setFavoriteMovie', data);
   },
 };
 

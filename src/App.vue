@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <menu-nav></menu-nav>
     <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/movieList">movieList</router-link>
@@ -7,7 +8,15 @@
     <router-view />
   </div>
 </template>
+<script>
+import menuNav from './components/menuNav.vue';
 
+export default {
+  components: {
+    menuNav,
+  },
+};
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
