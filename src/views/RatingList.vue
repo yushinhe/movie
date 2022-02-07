@@ -24,7 +24,12 @@
               class="mr-2 ml-2"
             ></el-progress>
             <div>
-              <h3 class="title mb-1">{{item.title}}</h3>
+                 <router-link
+                      class="link black-word cursor-pointer mb-1"
+                      :to="{ name: 'movieDetail', params: { id: item.id }}"
+                    >
+                      <h3>{{item.title}}</h3>
+                    </router-link>
               <p class="text-left">{{item.release_date}}</p>
             </div>
           </div>
