@@ -96,7 +96,7 @@
 </template>
 <script>
 import {
-  getMovieDetail, getMovieActors, getRecommendationsMovie, ratingMovie,
+  getMovieDetail, getMovieActors, getRecommendationsMovie,
 } from '../api/index';
 import ActorCarousel from '../components/ActorCarousel.vue';
 import RecommendationsMovies from '../components/RecommendationsMovies.vue';
@@ -241,9 +241,11 @@ export default {
     display: grid;
     grid-template-columns: 1fr 3fr;
     gap: 30px;
+    @media screen and (max-width: 576px) {
+    grid-template-columns: 1fr;
+    }
     .poster {
-      width: 300px;
-      height: 450px;
+   width: 100%;
       border-radius: 5px;
       &.no-image {
         background: lightgray;
@@ -270,6 +272,9 @@ export default {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 50px;
+     @media screen and (max-width: 576px) {
+    grid-template-columns: 1fr;
+    }
   .info-card {
     padding: 20px 40px;
     background: lightgrey;

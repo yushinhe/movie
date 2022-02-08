@@ -11,7 +11,7 @@
         :key='item.id'
         class="flex  card"
       >
-        <div class=" mr-5">
+        <div class="poster mr-5">
           <img :src="item.img">
         </div>
         <div class="pt-2 pb-2">
@@ -24,12 +24,12 @@
               class="mr-2 ml-2"
             ></el-progress>
             <div>
-                 <router-link
-                      class="link black-word cursor-pointer mb-1"
-                      :to="{ name: 'movieDetail', params: { id: item.id }}"
-                    >
-                      <h3>{{item.title}}</h3>
-                    </router-link>
+              <router-link
+                class="link black-word cursor-pointer mb-1"
+                :to="{ name: 'movieDetail', params: { id: item.id }}"
+              >
+                <h3>{{item.title}}</h3>
+              </router-link>
               <p class="text-left">{{item.release_date}}</p>
             </div>
           </div>
@@ -85,11 +85,16 @@ export default {
   border: 1px lightgray solid;
   border-radius: 20px;
   overflow: hidden;
-  width: 1200px;
   margin: 2rem auto;
-  img {
-    width: 130px;
+  .poster {
+  @media screen and (max-width: 576px) {
+   display: none;
+    }
+    img {
+      width: 130px;
+    }
   }
+
   .circle {
     width: 40px;
     height: 40px;

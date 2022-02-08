@@ -4,12 +4,9 @@
       <el-row
         type="flex"
         :gutter="20"
+        class="movie-list"
       >
-        <el-col
-          :xs="8"
-          :sm="6"
-          :md="4"
-        >
+        <el-col class="select-menu">
           <el-card
             class="box-card mb-2"
             :body-style="{ padding: '0px' }"
@@ -106,11 +103,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col
-          :xs="16"
-          :sm="18"
-          :md="20"
-        >
+        <el-col>
           <template v-if="Array.isArray(movieList)">
             <ul class="card-group">
               <li
@@ -163,6 +156,7 @@
               </li>
             </ul>
             <el-pagination
+              small
               background
               layout="prev, pager, next"
               :page-count="totalPage"
@@ -285,7 +279,6 @@ export default {
     },
     async getKeyWordList(query) {
       if (query.length === 0) return;
-      console.log('hi');
       await getKeywordList(query)
         .then((res) => {
           console.log(res);
@@ -343,70 +336,87 @@ export default {
 };
 </script>
 <style lang="scss" scoped >
-.card-group {
+.movie-list {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 20px;
-
-  @media screen and (max-width: 992px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  @media screen and (max-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-  }
-
+  grid-template-columns: 1fr 4fr;
   @media screen and (max-width: 576px) {
     grid-template-columns: 1fr;
   }
-  img {
+  .card-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 20px;
+
+    @media screen and (max-width: 992px) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media screen and (max-width: 576px) {
+      grid-template-columns: 1fr;
+          margin: 3rem auto 0;
+    width: 80%;
+    }
+    img {
+      width: 100%;
+    }
+  }
+  .no-img {
     width: 100%;
+    height: 0;
+    padding-bottom: 56%;
+    background: lightgray;
   }
-}
-.no-img {
-  width: 100%;
-  height: 0;
-  padding-bottom: 56%;
-  background: lightgray;
-}
-.el-card ::v-deep .el-card__header {
-  padding: 0;
-  border-bottom: 0px;
-}
-.circle-progress {
-  position: absolute;
-  top: 100%;
-  left: 90%;
-  transform: translate(-90%, -50%);
-}
-.info {
-  margin-top: 10px;
-}
-.sort-item {
-  display: flex;
-  justify-content: space-around;
-  padding: 0.5rem;
-  .sort-title {
-    font-weight: bold;
+  .el-card ::v-deep .el-card__header {
+    padding: 0;
+    border-bottom: 0px;
   }
-}
-.sort-body {
-  .sort-type-title {
-    text-align: left;
+  .circle-progress {
+    position: absolute;
+    top: 100%;
+    left: 90%;
+    transform: translate(-90%, -50%);
   }
-  padding: 20px;
-  .filter-btn {
-    border: 1px solid #9e9e9e;
-    border-radius: 14px;
-    padding: 4px 12px;
-    font-size: 0.9em;
-    margin-right: 6px;
-    margin-top: 8px;
-    cursor: pointer;
-    &.active,
-    &:hover {
-      background: rgb(1, 180, 228);
-      color: white;
+  .info {
+    margin-top: 10px;
+  }
+  .select-menu {
+    width: 100%;
+    @media screen and (max-width: 576px) {
+      margin: 0 auto;
+      width: 80%;
+    }
+    .sort-item {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem;
+      .sort-title {
+        font-weight: bold;
+      }
+    }
+    .sort-body {
+
+      .sort-type-title {
+        text-align: left;
+      }
+      padding: 20px;
+      .filter-btn {
+        border: 1px solid #9e9e9e;
+        border-radius: 14px;
+        padding: 4px 12px;
+        font-size: 0.9em;
+        margin-right: 6px;
+        margin-top: 8px;
+        cursor: pointer;
+        &.active,
+        &:hover {
+          background: rgb(1, 180, 228);
+          color: white;
+        }
+      }
     }
   }
 }

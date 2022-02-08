@@ -20,4 +20,3 @@ export const getMovieActors = (id) => requests(
 export const getRecommendationsMovie = (id) => requests(
   `/movie/${id}/recommendations?language=zh-TW&api_key=${apiKey}`,
 );
-export const ratingMovie = (data, id) => requests(`/movie/${id}/rating?api_key=${apiKey}`, data);
