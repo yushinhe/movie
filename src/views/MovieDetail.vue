@@ -86,7 +86,7 @@
         </div>
       </div>
       <h3 class="text-left mt-5 mb-2 ml-3">相關推薦電影</h3>
-      <div style="overflow-x:hidden">
+      <div style="overflow-x:hidden" class="mb-5">
 
         <recommendations-movies></recommendations-movies>
       </div>

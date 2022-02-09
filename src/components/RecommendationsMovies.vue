@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <ul class="flex">
+    <ul class="flex mb-2">
       <li
         v-for="item in recommendationsMovie"
         :key='item.id'
